@@ -1,3 +1,4 @@
+// app/api/faq/route.ts
 import { NextResponse } from 'next/server';
 import { openDb } from '@/lib/db';
 import { JSDOM } from 'jsdom';
@@ -10,8 +11,6 @@ function stripHtmlWithDOM(html: string): string {
   try {
     const dom = new JSDOM(html);
     const text = dom.window.document.body.textContent || '';
-    console.log('stripHtmlWithDOM 입력:', html);
-    console.log('stripHtmlWithDOM 출력:', text.trim());
     return text.trim();
   } catch (error) {
     console.error('stripHtmlWithDOM 처리 오류:', error, '입력:', html);
@@ -19,18 +18,30 @@ function stripHtmlWithDOM(html: string): string {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const query = searchParams.get('query');
+
   try {
     const db = await openDb();
-    const faqs = await db.all('SELECT * FROM faq_de ORDER BY regDate DESC LIMIT 100');
+    let faqs;
+    let sql = 'SELECT * FROM faq_de';
+    const params: string[] = [];
+
+    if (query) {
+      sql += ' WHERE qnaTitl LIKE ? OR qstnCntnCl LIKE ? OR ansCntnCl LIKE ?';
+      const likeQuery = `%${query}%`;
+      params.push(likeQuery, likeQuery, likeQuery);
+    }
+
+    sql += ' ORDER BY regDate DESC LIMIT 100';
+    faqs = await db.all(sql, params);
 
     const cleanedFaqs = faqs.map((faq) => ({
       ...faq,
       ansCntnCl: stripHtmlWithDOM(faq.ansCntnCl),
       qstnCntnCl: stripHtmlWithDOM(faq.qstnCntnCl),
     }));
-
-    console.log('정리된 FAQ 데이터 (DOMParser):', cleanedFaqs);
 
     return NextResponse.json(cleanedFaqs);
   } catch (error) {
