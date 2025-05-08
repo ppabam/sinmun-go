@@ -54,12 +54,12 @@ export default function FAQPage() {
 
   return (
     <main className="p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">국민권익위원회 질의/응답 조회</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center bg-blue-200 text-gray-800 rounded-lg shadow-sm py-3">국민권익위원회 질의/응답 조회</h1>
       <div className="mb-4 flex justify-center">
         <input
           type="text"
           placeholder="검색어를 입력하세요"
-          className="border p-2 rounded mr-2"
+          className="border p-2 rounded mr-2 w-65 text-center caret-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={searchTerm}
           onChange={handleInputChange}
         />

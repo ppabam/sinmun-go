@@ -33,7 +33,7 @@ export async function GET(request: Request) {
       params.push(likeQuery, likeQuery, likeQuery);
     }
 
-    sql += ' ORDER BY regDate DESC LIMIT 100';
+    sql += ' ORDER BY regDate DESC';
     const faqs = await db.all(sql, params);
 
     const cleanedFaqs = faqs.map((faq) => ({
