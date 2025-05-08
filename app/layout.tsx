@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "신문고 검색",
     description: "대한민국 국민권익위원회 국민신문고 정부민원안내콜센터 110 수집 민원 데이터 종합적으로 분석 제공 검색",
-    images: ["https://sinnum-go.vercel.app/og.jpg"],
+    images: ["https://sinmun-go.vercel.app/og.jpg"],
   },
 };
 
