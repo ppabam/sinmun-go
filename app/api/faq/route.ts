@@ -24,7 +24,6 @@ export async function GET(request: Request) {
 
   try {
     const db = await openDb();
-    let faqs;
     let sql = 'SELECT * FROM faq_de';
     const params: string[] = [];
 
@@ -35,7 +34,7 @@ export async function GET(request: Request) {
     }
 
     sql += ' ORDER BY regDate DESC LIMIT 100';
-    faqs = await db.all(sql, params);
+    const faqs = await db.all(sql, params);
 
     const cleanedFaqs = faqs.map((faq) => ({
       ...faq,
