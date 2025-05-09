@@ -89,7 +89,7 @@ export default function FAQPieChart() {
       const data = await fetchData();
       if (data && data.group_by) {
         // chartData 생성
-        const newChartData = data.group_by.map((item, index) => ({
+        const newChartData = data.group_by.map((item) => ({
           deptName: item.deptName,
           cnt: item.cnt,
           fill: `var(--color-${item.deptName.replace(/\s/g, "-").toLowerCase()})`,
