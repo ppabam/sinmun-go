@@ -28,16 +28,18 @@ interface DeptData {
 
 interface ApiResponse {
   total_count: number;
+  min_reg_date: string;
+  max_reg_date: string;
   group_by: DeptData[];
 }
 
 // 초기 chartData (로딩 전 기본값)
-const initialChartData: { deptName: string; visitors: number; fill: string }[] = [];
+const initialChartData: { deptName: string; cnt: number; fill: string }[] = [];
 
 // chartConfig 초기 설정
 const initialChartConfig: ChartConfig = {
-  visitors: {
-    label: "Visitors",
+  cnt: {
+    label: "Count",
   },
 };
 
@@ -67,7 +69,7 @@ const fetchData = async (): Promise<ApiResponse | null> => {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     const data = await res.json();
-    console.log("차트 데이터:", data);
+    // console.log("차트 데이터:", data);
     return data;
   } catch (error) {
     console.error("차트 데이터 로딩 실패:", error);
@@ -78,7 +80,9 @@ const fetchData = async (): Promise<ApiResponse | null> => {
 export default function FAQPieChart() {
   const [chartData, setChartData] = React.useState(initialChartData);
   const [chartConfig, setChartConfig] = React.useState<ChartConfig>(initialChartConfig);
-  const [totalVisitors, setTotalVisitors] = React.useState(0);
+  const [totalCount, setTotalCount] = React.useState(0);
+  const [minDate, setMinDate] = React.useState("");
+  const [maxDate, setMaxDate] = React.useState("");
 
   React.useEffect(() => {
     const loadData = async () => {
@@ -87,14 +91,14 @@ export default function FAQPieChart() {
         // chartData 생성
         const newChartData = data.group_by.map((item, index) => ({
           deptName: item.deptName,
-          visitors: item.cnt,
+          cnt: item.cnt,
           fill: `var(--color-${item.deptName.replace(/\s/g, "-").toLowerCase()})`,
         }));
 
         // chartConfig 생성
         const newChartConfig: ChartConfig = {
-          visitors: {
-            label: "Visitors",
+          cnt: {
+            label: "Count",
           },
           ...data.group_by.reduce((acc, item, index) => {
             const key = item.deptName.replace(/\s/g, "-").toLowerCase();
@@ -119,7 +123,9 @@ export default function FAQPieChart() {
 
         setChartData(newChartData);
         setChartConfig(newChartConfig);
-        setTotalVisitors(data.total_count);
+        setTotalCount(data.total_count);
+        setMinDate(data.min_reg_date);
+        setMaxDate(data.max_reg_date);
 
         // cleanup: 컴포넌트 언마운트 시 style 태그 제거
         return () => {
@@ -134,8 +140,8 @@ export default function FAQPieChart() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>답변 기관</CardTitle>
+        <CardDescription>{ minDate } ~ { maxDate }</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -149,7 +155,7 @@ export default function FAQPieChart() {
             />
             <Pie
               data={chartData}
-              dataKey="visitors"
+              dataKey="cnt"
               nameKey="deptName"
               innerRadius={60}
               strokeWidth={5}
@@ -169,7 +175,7 @@ export default function FAQPieChart() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {totalCount.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
@@ -192,7 +198,7 @@ export default function FAQPieChart() {
           Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Showing total count for the last 6 months
         </div>
       </CardFooter>
     </Card>
