@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import * as React from "react";
 import { TrendingUp } from "lucide-react";
@@ -20,41 +20,47 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 190, fill: "var(--color-other)" },
-];
+// API 데이터 타입 정의
+interface DeptData {
+  deptName: string;
+  cnt: number;
+}
 
-const chartConfig = {
+interface ApiResponse {
+  total_count: number;
+  group_by: DeptData[];
+}
+
+// 초기 chartData (로딩 전 기본값)
+const initialChartData: { deptName: string; visitors: number; fill: string }[] = [];
+
+// chartConfig 초기 설정
+const initialChartConfig: ChartConfig = {
   visitors: {
     label: "Visitors",
   },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig;
+};
 
-const fetchData = async () => {
+// 기존 CSS 변수 (global.css에 정의된 값)
+const predefinedColors = [
+  "221.2 83.2% 53.3%", // --chart-1
+  "212 95% 68%",      // --chart-2
+  "216 92% 60%",      // --chart-3
+  "210 98% 78%",      // --chart-4
+  "212 97% 87%",      // --chart-5
+];
+
+// 동적 색상 생성 함수
+const generateColor = (index: number): string => {
+  if (index < predefinedColors.length) {
+    return predefinedColors[index];
+  }
+  // 추가 색상 생성 (HSL 기반)
+  const hue = (index * 137.5) % 360; // 황금각도 비율로 색상 분포
+  return `${hue} 70% 60%`;
+};
+
+const fetchData = async (): Promise<ApiResponse | null> => {
   try {
     const res = await fetch("/api/faq/chart");
     if (!res.ok) {
@@ -67,18 +73,63 @@ const fetchData = async () => {
     console.error("차트 데이터 로딩 실패:", error);
     return null;
   }
-}
+};
 
-export default function FAQPiChart() {
+export default function FAQPieChart() {
+  const [chartData, setChartData] = React.useState(initialChartData);
+  const [chartConfig, setChartConfig] = React.useState<ChartConfig>(initialChartConfig);
+  const [totalVisitors, setTotalVisitors] = React.useState(0);
+
   React.useEffect(() => {
-    console.log("=======================");
-    fetchData();
-    console.log("=======================");
-  }, []);
+    const loadData = async () => {
+      const data = await fetchData();
+      if (data && data.group_by) {
+        // chartData 생성
+        const newChartData = data.group_by.map((item, index) => ({
+          deptName: item.deptName,
+          visitors: item.cnt,
+          fill: `var(--color-${item.deptName.replace(/\s/g, "-").toLowerCase()})`,
+        }));
 
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
-  }, [])
+        // chartConfig 생성
+        const newChartConfig: ChartConfig = {
+          visitors: {
+            label: "Visitors",
+          },
+          ...data.group_by.reduce((acc, item, index) => {
+            const key = item.deptName.replace(/\s/g, "-").toLowerCase();
+            acc[key] = {
+              label: item.deptName,
+              color: `hsl(${generateColor(index)})`,
+            };
+            return acc;
+          }, {} as Record<string, { label: string; color: string }>),
+        };
+
+        // 동적 CSS 변수 주입
+        const styleSheet = document.createElement("style");
+        const cssRules = data.group_by
+          .map((item, index) => {
+            const key = item.deptName.replace(/\s/g, "-").toLowerCase();
+            return `--color-${key}: ${generateColor(index)};`;
+          })
+          .join("\n");
+        styleSheet.textContent = `:root {\n${cssRules}\n}`;
+        document.head.appendChild(styleSheet);
+
+        setChartData(newChartData);
+        setChartConfig(newChartConfig);
+        setTotalVisitors(data.total_count);
+
+        // cleanup: 컴포넌트 언마운트 시 style 태그 제거
+        return () => {
+          document.head.removeChild(styleSheet);
+        };
+      }
+    };
+
+    loadData();
+  }, []);
 
   return (
     <Card className="flex flex-col">
@@ -99,7 +150,7 @@ export default function FAQPiChart() {
             <Pie
               data={chartData}
               dataKey="visitors"
-              nameKey="browser"
+              nameKey="deptName"
               innerRadius={60}
               strokeWidth={5}
             >
@@ -128,7 +179,7 @@ export default function FAQPiChart() {
                           FAQ
                         </tspan>
                       </text>
-                    )
+                    );
                   }
                 }}
               />
@@ -145,5 +196,5 @@ export default function FAQPiChart() {
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }
