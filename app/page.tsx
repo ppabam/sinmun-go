@@ -50,12 +50,14 @@ export default function FAQPage() {
 
   return (
     <main className="p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center bg-blue-200 text-gray-800 rounded-lg shadow-sm py-3">국민권익위원회 질의/응답 조회</h1>
+      <h1 className="text-xl font-bold mb-4 text-center bg-blue-300 text-gray-800 rounded-2xl shadow-sm py-3">
+        국민권익위원회 문의 데이터 조회
+      </h1>
       <div className="mb-4 flex justify-center">
         <Input
           type="text"
           placeholder="검색어 + 엔터"
-          className="mr-1 text-center"
+          className="mr-3 text-center"
           value={searchTerm}
           onChange={handleInputChange}
           onKeyDown={(e) => {
@@ -76,12 +78,12 @@ export default function FAQPage() {
       </div>
       )}
 
-      {!loading && hasSearched && faqs.length === 0 && (
-        <div className="text-center text-gray-500">검색 결과가 없습니다.</div>
-      )}
-
       {!loading && hasSearched && faqs.length > 0 && (
         <FAQList faqs={faqs} />
+      )}
+
+      {!loading && hasSearched && faqs.length === 0 && (
+        <div className="text-center text-gray-500">검색 결과가 없습니다.</div>
       )}
     </main>
   );

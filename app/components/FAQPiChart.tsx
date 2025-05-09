@@ -102,7 +102,7 @@ export default function FAQPiChart() {
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          FAQ
                         </tspan>
                       </text>
                     )
