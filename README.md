@@ -310,3 +310,6 @@ $ mv * ../
 $ cd ../
 $ rm -rf sinmun-go-fe
 ```
+
+### Ref
+- UI -> https://ui.shadcn.com

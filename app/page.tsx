@@ -4,6 +4,10 @@
 import { useEffect, useState, useCallback } from 'react';
 import FAQList from '@/app/components/FAQList'; // FAQList 컴포넌트 import
 import { FAQ } from '@/app/types/faq';
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+
+
 
 export default function FAQPage() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -46,16 +50,19 @@ export default function FAQPage() {
     <main className="p-4">
       <h1 className="text-2xl font-bold mb-4 text-center bg-blue-200 text-gray-800 rounded-lg shadow-sm py-3">국민권익위원회 질의/응답 조회</h1>
       <div className="mb-4 flex justify-center">
-        <input
+        <Input
           type="text"
-          placeholder="검색어를 입력하세요"
-          className="border p-2 rounded mr-2 w-65 text-center caret-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="검색어 + 엔터"
+          className="mr-1 text-center"
           value={searchTerm}
           onChange={handleInputChange}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSearch();
+            }
+          }}
         />
-        <button onClick={handleSearch} className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
-          검색
-        </button>
+        <Button onClick={handleSearch} variant="outline">⏎</Button>
       </div>
 
       {loading && <div className="text-center">데이터를 로딩 중입니다...</div>}
