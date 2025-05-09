@@ -2,7 +2,9 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import FAQList from '@/app/components/FAQList'; // FAQList 컴포넌트 import
+import FAQList from '@/app/components/FAQList'; 
+import FAQPiChart from '@/app/components/FAQPiChart';
+import FAQBarChart from '@/app/components/FAQBarChart';
 import { FAQ } from '@/app/types/faq';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -66,6 +68,13 @@ export default function FAQPage() {
       </div>
 
       {loading && <div className="text-center">데이터를 로딩 중입니다...</div>}
+
+      {!loading && !hasSearched && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FAQPiChart />
+        <FAQBarChart />
+      </div>
+      )}
 
       {!loading && hasSearched && faqs.length === 0 && (
         <div className="text-center text-gray-500">검색 결과가 없습니다.</div>
