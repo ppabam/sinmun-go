@@ -78,7 +78,7 @@ export default function DeptTable() {
             {invoices.map((invoice) => (
               <TableRow key={invoice.deptName}>
                 <TableCell className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                  <Link href={`/dept-detail/${encodeURIComponent(invoice.deptName)}`} className="hover:underline text-blue-600">
+                  <Link href={`/depts/${encodeURIComponent(invoice.deptName)}`} className="hover:underline text-blue-600">
                     {invoice.deptName}
                   </Link>
                 </TableCell>

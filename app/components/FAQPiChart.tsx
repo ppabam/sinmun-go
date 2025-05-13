@@ -202,7 +202,7 @@ export default function FAQPieChart() {
         </div>
         <div className="leading-none text-muted-foreground">
           상위 {chartData.length}개 기관의 답변은 {chartData.reduce((sum, item) => sum + item.cnt, 0).toLocaleString()} 건 이며 전체 문의의 {((chartData.reduce((sum, item) => sum + item.cnt, 0) / totalCount) * 100).toFixed(1)}%를 차지합니다.
-          <Link href="/depttable" className="ml-2 text-blue-500 hover:underline">
+          <Link href="/depts" className="ml-2 text-blue-500 hover:underline">
           ✔️상세보기
           </Link>
         </div>

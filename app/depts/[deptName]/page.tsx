@@ -69,8 +69,8 @@ export default function DeptDetailPage() {
         <h2 className="text-2xl font-semibold text-gray-800">
           {decodedDeptName} - 소속 기관
         </h2>
-        <Link href="/depttable" className="text-blue-600 hover:underline flex items-center">
-          돌아가기
+        <Link href="/depts" className="text-blue-600 hover:underline flex items-center">
+        ↩️
         </Link>
       </div>
 
@@ -102,7 +102,9 @@ export default function DeptDetailPage() {
             {details.map((detail) => (
               <TableRow key={detail.deptName}>
                 <TableCell className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-normal break-words">
-                  {detail.deptName}
+                  <Link href={`/dept2faq/${encodeURIComponent(detail.deptName)}`} className="hover:underline text-blue-600">
+                    {detail.deptName}
+                  </Link>
                 </TableCell>
                 <TableCell className="px-4 py-3 text-sm text-gray-700 text-right">
                   {detail.cnt.toLocaleString()} ({((detail.cnt / totalCount) * 100).toFixed(1)})
