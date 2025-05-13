@@ -1,6 +1,9 @@
 # sinmun-go
 - 대한민국 국민권익위원회 국민신문고 정부민원안내콜센터 110 수집 민원 데이터 종합적으로 분석 제공 검색
 
+![image](https://github.com/user-attachments/assets/787d2d7c-c970-4ace-8570-ce0fbe1fa944)
+
+
 ## API
 - [국민권익위원회_민원정책 질의응답조회서비스](https://www.data.go.kr/data/15074671/openapi.do)
 ```bash
