@@ -36,7 +36,7 @@ export async function GET() {
         faq_de d JOIN faq f
       ON d.faqNo = f.faqNo
       GROUP BY d.regDate, f.dutySctnNm
-      ORDER BY d.regDate
+      ORDER BY d.regDate -- DESC LIMIT 60
     )`;
     const result_group_by = await db.all(sql_group_by);
     
