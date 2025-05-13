@@ -70,7 +70,7 @@ export default function DeptDetailPage() {
           {decodedDeptName} - 소속 기관
         </h2>
         <Link href="/depts" className="text-blue-600 hover:underline flex items-center">
-          돌아가기
+        ↩️
         </Link>
       </div>
 

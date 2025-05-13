@@ -29,7 +29,7 @@ export default function DeptDetailPage() {
         }
         const data = await response.json();
         console.log("상세 데이터:", data);
-        setFaqs(data);
+        setFaqs(data.faqs);
       } catch (error: unknown) {
         console.error("상세 데이터 호출 오류:", error);
         setError("상세 데이터를 불러오는 중 오류가 발생했습니다.");
@@ -52,11 +52,11 @@ export default function DeptDetailPage() {
   return (
     <div className="container mx-auto p-4">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-gray-800">
-          {decodedDeptName} - 소속 기관
+        <h2 className="text-xl font-semibold text-gray-800">
+          {decodedDeptName}
         </h2>
         <Link href={`/depts/${mainDeptName}`} className="text-blue-600 hover:underline flex items-center">
-          돌아가기
+        ↩️
         </Link>
       </div>
 
