@@ -195,10 +195,12 @@ export default function FAQPieChart() {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+          {(chartData[0]?.cnt ?? 0).toLocaleString()} 건의 {chartData[0]?.deptName ?? "기관"} 문의가{" "}
+          {(((chartData[0]?.cnt ?? 0) / (totalCount || 1)) * 100).toFixed(1)}%
+          <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing total count for the last 6 months
+          상위 {chartData.length}개 기관의 답변은 {chartData.reduce((sum, item) => sum + item.cnt, 0).toLocaleString()} 건 이며 전체 문의의 {((chartData.reduce((sum, item) => sum + item.cnt, 0) / totalCount) * 100).toFixed(1)}%를 차지합니다.
         </div>
       </CardFooter>
     </Card>

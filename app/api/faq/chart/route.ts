@@ -32,7 +32,7 @@ export async function GET() {
       FROM faq_de
       GROUP BY SUBSTRING(deptName, 1, INSTR(deptName, ' ') - 1)
       ORDER BY cnt DESC
-      LIMIT 20`
+      LIMIT 10`
     const result_group_by = await db.all(sql_group_by);
     
     return NextResponse.json(
