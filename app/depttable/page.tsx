@@ -32,7 +32,7 @@ export default function DeptTable() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/faq/chart');
+        const response = await fetch('/api/faq/chart?limit=100');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -51,7 +51,7 @@ export default function DeptTable() {
   return (
     <div className="container mx-auto p-4">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-gray-800">부서별 문의 현황</h2>
+        <h2 className="text-2xl font-semibold text-gray-800">기관별 문의 현황</h2>
         <Link href="/">
         ↩️
         </Link>
@@ -59,12 +59,12 @@ export default function DeptTable() {
       <div className="rounded-md shadow-sm">
         <Table>
           <TableCaption className="text-lg font-medium text-gray-700 mb-4">
-            최근 FAQ 현황 (총 {totalCount} 건)
+            최근 FAQ 현황 (총 {totalCount.toLocaleString()} 건)
           </TableCaption>
           <TableHeader className="bg-gray-50">
             <TableRow>
               <TableHead className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                부서명
+                기관명
               </TableHead>
               <TableHead className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 문의 수
@@ -96,7 +96,7 @@ export default function DeptTable() {
           <TableFooter className="bg-gray-50">
             <TableRow>
               <TableCell className="px-4 py-3 text-left text-sm font-medium text-gray-700" colSpan={2}>
-                총 부서 수
+                총 상위기관
               </TableCell>
               <TableCell className="px-4 py-3 text-right text-sm font-medium text-gray-700">
                 {invoices.length}
