@@ -27,7 +27,7 @@ interface ApiResponse {
 export default function DeptTable() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [totalInquiries, setTotalInquiries] = useState<number>(0); // 전체 문의 건수 상태 추가
+  const [totalInquiries, setTotalInquiries] = useState<number>(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,8 +39,6 @@ export default function DeptTable() {
         const data: ApiResponse = await response.json();
         setInvoices(data.group_by);
         setTotalCount(data.total_count);
-        // 전체 문의 건수를 API 응답에서 직접 가져오거나, group_by 데이터를 기반으로 계산할 수 있습니다.
-        // 여기서는 API 응답에 total_count가 있다고 가정합니다.
         setTotalInquiries(data.total_count);
       } catch (error) {
         console.error("API 호출 오류:", error);
@@ -51,46 +49,62 @@ export default function DeptTable() {
   }, []);
 
   return (
-    <div>
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-semibold mt-3">부서별 문의 현황</h2>
-        <Link href="/" className="text-blue-500 hover:underline">
-        🔎
+    <div className="container mx-auto p-4">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-2xl font-semibold text-gray-800">부서별 문의 현황</h2>
+        <Link href="/">
+        ↩️
         </Link>
       </div>
-      <Table>
-        <TableCaption>최근 FAQ 현황 (총 {totalCount} 건)</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">NAME</TableHead>
-            <TableHead className="text-right">COUNT</TableHead>
-            <TableHead className="text-right">PERCENT</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.deptName}>
-              <TableCell className="font-medium">{invoice.deptName}</TableCell>
-              <TableCell className="text-right">
-                {invoice.cnt.toLocaleString()}
+      <div className="rounded-md shadow-sm">
+        <Table>
+          <TableCaption className="text-lg font-medium text-gray-700 mb-4">
+            최근 FAQ 현황 (총 {totalCount} 건)
+          </TableCaption>
+          <TableHeader className="bg-gray-50">
+            <TableRow>
+              <TableHead className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                부서명
+              </TableHead>
+              <TableHead className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                문의 수
+              </TableHead>
+              <TableHead className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                비율
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody className="bg-white divide-y divide-gray-200">
+            {invoices.map((invoice) => (
+              <TableRow key={invoice.deptName}>
+                <TableCell className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                  {invoice.deptName}
+                </TableCell>
+                <TableCell className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 text-right">
+                  {invoice.cnt.toLocaleString()}
+                </TableCell>
+                <TableCell className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 text-right">
+                  {totalInquiries > 0 && (
+                    <span className="text-gray-500">
+                      {((invoice.cnt / totalInquiries) * 100).toFixed(2)}%
+                    </span>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableFooter className="bg-gray-50">
+            <TableRow>
+              <TableCell className="px-4 py-3 text-left text-sm font-medium text-gray-700" colSpan={2}>
+                총 부서 수
               </TableCell>
-              <TableCell className="text-right">
-                {totalInquiries > 0 && (
-                  <span className="ml-1 text-gray-500">
-                    {((invoice.cnt / totalInquiries) * 100).toFixed(3)}%
-                  </span>
-                )}
+              <TableCell className="px-4 py-3 text-right text-sm font-medium text-gray-700">
+                {invoices.length}
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell>총 부서 수</TableCell>
-            <TableCell className="text-right">{invoices.length}</TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
+          </TableFooter>
+        </Table>
+      </div>
     </div>
   );
 }
