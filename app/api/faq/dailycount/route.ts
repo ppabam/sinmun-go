@@ -21,17 +21,20 @@ export async function GET() {
     const sql_group_by = `
     SELECT
       SUBSTR(regDate, 1, 4) || '-' || SUBSTR(regDate, 5, 2) || '-' || SUBSTR(regDate, 7, 2) AS regDate,
-      dutySctnNm,
+      CASE dutySctnNm
+      WHEN 'tqapttn' THEN '민원'
+      WHEN 'tqaplcy' THEN '정책'
+      ELSE dutySctnNm
+      END AS dutySctnNm,
       cnt
     FROM (
       SELECT 
-      d.regDate, 
-      f.dutySctnNm,
-      COUNT(*) cnt 
+        d.regDate, 
+        f.dutySctnNm,
+        COUNT(*) cnt 
       FROM
         faq_de d JOIN faq f
-      ON 
-        d.faqNo = f.faqNo
+      ON d.faqNo = f.faqNo
       GROUP BY d.regDate, f.dutySctnNm
       ORDER BY d.regDate
     )`;
