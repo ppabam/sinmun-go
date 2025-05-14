@@ -29,7 +29,7 @@ export default function DeptDetailPage() {
         }
         const data = await response.json();
         console.log("상세 데이터:", data);
-        setFaqs(data.faqs);
+        setFaqs(data.cleanedFaqs);
       } catch (error: unknown) {
         console.error("상세 데이터 호출 오류:", error);
         setError("상세 데이터를 불러오는 중 오류가 발생했습니다.");
