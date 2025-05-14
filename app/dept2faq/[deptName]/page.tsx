@@ -5,20 +5,18 @@ import Link from "next/link";
 import { useParams } from 'next/navigation';
 import FAQList from '@/app/components/FAQList'; 
 import { FAQ } from '@/app/types/faq';
+import Loading from '@/app/components/Loading';
 
 export default function DeptDetailPage() {
   const { deptName: encodedDeptName } = useParams();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  // const [decodedDeptName, setDecodedDeptName] = useState<string>('');
   const decodedDeptName = decodeURIComponent(encodedDeptName as string);
   const mainDeptName = decodedDeptName.split(" ")[0];
 
   const [faqs, setFaqs] = useState<FAQ[]>([]);
 
   useEffect(() => {
-    // setDecodedDeptName(decodeURIComponent(encodedDeptName as string));
-
     const fetchDetailData = async () => {
       setLoading(true);
       setError(null);
@@ -42,7 +40,7 @@ export default function DeptDetailPage() {
   }, [encodedDeptName]);
 
   if (loading) {
-    return <div>Loading 상세 데이터...</div>;
+     return <Loading message={`${decodedDeptName} 데이터를 질주해서 가져오는 중입니다... 🏃‍♀️💨`} />;
   }
 
   if (error) {

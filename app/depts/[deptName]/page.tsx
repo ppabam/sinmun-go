@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from 'next/navigation';
+import Loading from "@/app/components/Loading";
 
 interface Detail {
   deptName: string;
@@ -54,7 +55,7 @@ export default function DeptDetailPage() {
   }, [encodedDeptName]);
 
   if (loading) {
-    return <div>Loading 상세 데이터...</div>;
+    return <Loading message={`${decodedDeptName} 관련 기관 소집 중`}/>;
   }
 
   if (error) {
