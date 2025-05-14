@@ -8,6 +8,7 @@ import FAQBarChart from '@/app/components/FAQBarChart';
 import { FAQ } from '@/app/types/faq';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import Loading from './components/Loading';
 
 
 
@@ -69,7 +70,7 @@ export default function FAQPage() {
         <Button onClick={handleSearch} variant="outline">⏎</Button>
       </div>
 
-      {loading && <div className="text-center">데이터를 로딩 중입니다...</div>}
+      {loading && <Loading message='0과 1 사이에서 문서를 찾는 중입니다... 💻📡'/>}
 
       {!loading && !hasSearched && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
