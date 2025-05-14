@@ -103,26 +103,28 @@ export const fetchGroupByDay = unstable_cache(
   { revalidate: 3600 } // 캐시 유효 시간 (초) - 예: 1시간
 );
 
-export const fetchWhereDeptFaq = unstable_cache(
-  async (deptName: string) => {
-    const db = await openDb();
+const fetchWhereDeptFaqFn = async (deptName: string) => {
+  const db = await openDb();
 
-    const sql = `
-          SELECT * 
-          FROM faq_de
-          WHERE deptName = ?
-          ORDER BY regDate DESC
-        `;
-        const faqs = await db.all(sql, [`${deptName}`]);
-    
-        const cleanedFaqs = faqs.map((faq) => ({
-          ...faq,
-          ansCntnCl: stripHtmlWithDOM(faq.ansCntnCl),
-          qstnCntnCl: stripHtmlWithDOM(faq.qstnCntnCl),
-        }));
+  const sql = `
+    SELECT *
+    FROM faq_de
+    WHERE deptName = ?
+    ORDER BY regDate DESC
+  `;
+  const faqs = await db.all(sql, [deptName]);
 
-    return cleanedFaqs;
-  },
-  ['fetchWhereDept'], // 캐시 키 (선택 사항)
-  { revalidate: 3600 } // 캐시 유효 시간 (초) - 예: 1시간
-);
+  const cleanedFaqs = faqs.map((faq) => ({
+    ...faq,
+    ansCntnCl: stripHtmlWithDOM(faq.ansCntnCl),
+    qstnCntnCl: stripHtmlWithDOM(faq.qstnCntnCl),
+  }));
+
+  return cleanedFaqs;
+};
+
+// 캐시된 함수 생성
+export const fetchWhereDeptFaq = (deptName: string) =>
+  unstable_cache(fetchWhereDeptFaqFn, [`fetchWhereDept`, deptName], {
+    revalidate: 3600,
+  })(deptName);
