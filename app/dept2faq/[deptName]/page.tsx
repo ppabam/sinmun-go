@@ -21,13 +21,13 @@ export default function DeptDetailPage() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/faq/dept?deptName=${encodedDeptName}`);
+        const response = await fetch(`/api/faq/dept2faq?deptName=${encodedDeptName}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         console.log("상세 데이터:", data);
-        setFaqs(data.cleanedFaqs);
+        setFaqs(data);
       } catch (error: unknown) {
         console.error("상세 데이터 호출 오류:", error);
         setError("상세 데이터를 불러오는 중 오류가 발생했습니다.");
